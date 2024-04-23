@@ -103,7 +103,7 @@ function Get-TargetResource
 
         $getValue = $null
         #region resource generator code
-        $getValue = Get-MgBetaAccessReview -AccessReviewId $Id  -ErrorAction SilentlyContinue
+        $getValue = Get-MgBetaAccessReview -AccessReviewId $Id -ErrorAction SilentlyContinue
 
         if ($null -eq $getValue)
         {
@@ -382,7 +382,7 @@ function Set-TargetResource
     }
     elseif ($Ensure -eq 'Absent' -and $currentInstance.Ensure -eq 'Present')
     {
-        Write-Verbose -Message "Removing the Azure AD Access Review with Id {$($currentInstance.Id)}" 
+        Write-Verbose -Message "Removing the Azure AD Access Review with Id {$($currentInstance.Id)}"
         #region resource generator code
 Remove-MgBetaAccessReview -AccessReviewId $currentInstance.Id
         #endregion
@@ -589,11 +589,14 @@ function Export-TargetResource
 
     try
     {
-        #region resource generator code
-        [array]$getValue = Get-MgBetaAccessReview `
-            -All `
-            -ErrorAction Stop
-        #endregion
+        $BusinessFlowTemplates = Get-MgBetaBusinessFlowTemplate
+        $getValue = @()
+        foreach ($BFTemplate in $BusinessFlowTemplates) {
+            #region resource generator code
+        $getValue += Get-MgBetaAccessReview -Filter "businessFlowTemplateId eq '$($BFTemplate.ID)'" -ErrorAction Stop
+    #endregion
+        }
+
 
         $i = 1
         $dscContent = ''
