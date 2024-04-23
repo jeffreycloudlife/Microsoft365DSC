@@ -1,0 +1,45 @@
+{
+    "resourceName": "AADAccessReview",
+    "description": "This resource configures an Azure AD Access Review.",
+    "permissions":    {
+    "graph":  {
+                  "delegated":  {
+                                    "read":  [
+                                                 {
+                                                     "name":  "AccessReview.Read.All"
+                                                 },
+                                                 {
+                                                     "name":  "AccessReview.ReadWrite.Membership"
+                                                 }
+                                             ],
+                                    "update":  [
+                                                   {
+                                                       "name":  "AccessReview.ReadWrite.All"
+                                                   },
+                                                   {
+                                                       "name":  "AccessReview.ReadWrite.Membership"
+                                                   }
+                                               ]
+                                },
+                  "application":  {
+                                      "read":  [
+                                                   {
+                                                       "name":  "AccessReview.Read.All"
+                                                   },
+                                                   {
+                                                       "name":  "AccessReview.ReadWrite.Membership"
+                                                   }
+                                               ],
+                                      "update":  [
+                                                     {
+                                                         "name":  "AccessReview.ReadWrite.All"
+                                                     },
+                                                     {
+                                                         "name":  "AccessReview.ReadWrite.Membership"
+                                                     }
+                                                 ]
+                                  }
+              }
+}
+
+}

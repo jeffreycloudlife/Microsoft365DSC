@@ -1,0 +1,66 @@
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphUserIdentity
+{
+    [Write, Description("Indicates the client IP address used by user performing the activity (audit log only).")] String IpAddress;
+    [Write, Description("The userPrincipalName attribute of the user.")] String UserPrincipalName;
+    [Write, Description("")] String UserPrincipalName;
+    [Write, Description("For user sign ins, the identifier of the tenant that the user is a member of.")] String HomeTenantId;
+    [Write, Description("For user sign ins, the name of the tenant that the user is a member of. Only populated in cases where the home tenant has provided affirmative consent to Microsoft Entra ID to show the tenant content.")] String HomeTenantName;
+    [Write, Description("The type of the entity."), ValueMap{"#microsoft.graph.auditUserIdentity"}, Values{"#microsoft.graph.auditUserIdentity"}] String odataType;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphIdentity
+{
+    [Write, Description("The type of identity. Possible values are: user or group for Microsoft Entra identities and externalgroup for groups in an external system.")] String Type;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphAccessReviewSettings
+{
+    [Write, Description("Indicates whether showing recommendations to reviewers is enabled.")] Boolean AccessRecommendationsEnabled;
+    [Write, Description("The number of days of user activities to show to reviewers.")] UInt32 ActivityDurationInDays;
+    [Write, Description("Indicates whether the auto-apply capability, to automatically change the target object access resource, is enabled.  If not enabled, a user must, after the review completes, apply the access review.")] Boolean AutoApplyReviewResultsEnabled;
+    [Write, Description("Indicates whether a decision should be set if the reviewer didn't supply one. For use when, auto-apply is enabled. If you don't want to have a review decision recorded unless the reviewer makes an explicit choice, set it to false.")] Boolean AutoReviewEnabled;
+    [Write, Description("Detailed settings for how the feature should set the review decision. For use when, auto-apply is enabled."), EmbeddedInstance("MSFT_MicrosoftGraphAutoReviewSettings")] String AutoReviewSettings;
+    [Write, Description("Indicates whether reviewers are required to provide a justification when reviewing access.")] Boolean JustificationRequiredOnApproval;
+    [Write, Description("Indicates whether sending mails to reviewers and the review creator is enabled.")] Boolean MailNotificationsEnabled;
+    [Write, Description("Detailed settings for recurrence."), EmbeddedInstance("MSFT_MicrosoftGraphAccessReviewRecurrenceSettings")] String RecurrenceSettings;
+    [Write, Description("Indicates whether sending reminder emails to reviewers is enabled.")] Boolean RemindersEnabled;
+    [Write, Description("")] UInt32 DurationInDays;
+    [Write, Description("The type of the entity."), ValueMap{"#microsoft.graph.businessFlowSettings"}, Values{"#microsoft.graph.businessFlowSettings"}] String odataType;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphAutoReviewSettings
+{
+    [Write, Description("Possible values: Approve, Deny, or Recommendation.  If Recommendation, then accessRecommendationsEnabled in the accessReviewSettings resource should also be set to true. If you want to have the system provide a decision even if the reviewer does not make a choice, set the autoReviewEnabled property in the accessReviewSettings resource to true and include an autoReviewSettings object with the notReviewedResult property. Then, when a review completes, based on the notReviewedResult property, the decision is recorded as either Approve or Deny.")] String NotReviewedResult;
+};
+[ClassVersion("1.0.0")]
+class MSFT_MicrosoftGraphAccessReviewRecurrenceSettings
+{
+    [Write, Description("The duration in days for recurrence.")] UInt32 DurationInDays;
+    [Write, Description("The count of recurrences, if the value of recurrenceEndType is occurrences, or 0 otherwise.")] UInt32 RecurrenceCount;
+    [Write, Description("How the recurrence ends. Possible values: never, endBy, occurrences, or recurrenceCount. If it's never, then there's no explicit end of the recurrence series. If it's endBy, then the recurrence ends at a certain date. If it's occurrences, then the series ends after recurrenceCount instances of the review have completed.")] String RecurrenceEndType;
+    [Write, Description("The recurrence interval. Possible values: onetime, weekly, monthly, quarterly, halfyearly or annual.")] String RecurrenceType;
+};
+
+[ClassVersion("1.0.0.0"), FriendlyName("AADAccessReview")]
+class MSFT_AADAccessReview : OMI_BaseResource
+{
+    [Write, Description("The business flow template identifier. Required on create. This value is case sensitive.")] String BusinessFlowTemplateId;
+    [Write, Description("The user who created this review."), EmbeddedInstance("MSFT_MicrosoftGraphuserIdentity")] String CreatedBy;
+    [Write, Description("The description provided by the access review creator, to show to the reviewers.")] String Description;
+    [Required, Description("The access review name. Required on create.")] String DisplayName;
+    [Write, Description("The DateTime when the review is scheduled to end. This must be at least one day later than the start date. Required on create.")] String EndDateTime;
+    [Write, Description("The object for which the access review is reviewing the access rights assignments. This identity can be the group for the review of memberships of users in a group, or the app for a review of assignments of users to an application. Required on create."), EmbeddedInstance("MSFT_MicrosoftGraphidentity")] String ReviewedEntity;
+    [Write, Description("The relationship type of reviewer to the target object, one of: self, delegated, entityOwners. Required on create.")] String ReviewerType;
+    [Write, Description("The settings of an accessReview, see type definition below."), EmbeddedInstance("MSFT_MicrosoftGraphaccessReviewSettings")] String Settings;
+    [Write, Description("The date and time when the review is scheduled to be start. This date can be in the future.  Required on create.")] String StartDateTime;
+    [Write, Description("This read-only field specifies the status of an accessReview. The typical states include Initializing, NotStarted, Starting,InProgress, Completing, Completed, AutoReviewing, and AutoReviewed.")] String Status;
+    [Key, Description("The unique identifier for an entity. Read-only.")] String Id;
+    [Write, Description("Present ensures the policy exists, absent ensures it is removed."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] string Ensure;
+    [Write, Description("Credentials of the Admin"), EmbeddedInstance("MSFT_Credential")] string Credential;
+    [Write, Description("Id of the Azure Active Directory application to authenticate with.")] String ApplicationId;
+    [Write, Description("Id of the Azure Active Directory tenant used for authentication.")] String TenantId;
+    [Write, Description("Secret of the Azure Active Directory tenant used for authentication."), EmbeddedInstance("MSFT_Credential")] String ApplicationSecret;
+    [Write, Description("Thumbprint of the Azure Active Directory application's authentication certificate to use for authentication.")] String CertificateThumbprint;
+    [Write, Description("Managed ID being used for authentication.")] Boolean ManagedIdentity;
+};
